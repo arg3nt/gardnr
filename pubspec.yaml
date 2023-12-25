@@ -65,6 +65,7 @@ flutter:
     - images/discoverIcon.svg
     - images/messageIcon.svg
     - images/userIcon.svg
+    - images/img_not_found.jpg
     # Test data
     - images/samwiseGardening.jpg
     - images/hobbiton.jpg
