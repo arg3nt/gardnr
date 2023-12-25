@@ -182,6 +182,7 @@ class _ProfilePageState extends State<ProfilePage> {
       EditMode.previewing => DiscoverProfile(
           profile: _profile,
           nextTrigger: () {},
+          newMatch: (user) {},
         ),
     };
   }
@@ -232,6 +233,7 @@ Future<UserProfile> lookupUser() async {
   return UserProfile(
       accountSettings: AccountSettings(),
       gardenerProfile: GardenerProfile(
+          uid: 0,
           assets: rootBundle,
           name: "Samwise Gamgee",
           images: [

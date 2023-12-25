@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 
@@ -12,11 +14,15 @@ class UserProfile {
 
 class BaseProfile {
   BaseProfile(
-      {required this.assets,
+      {required this.uid,
+      required this.assets,
       required this.name,
       required this.images,
       required this.description,
       required this.location});
+
+  // A unique identifier for the user.
+  int uid;
 
   // The AssetBundle used to retrieve assets for the given gardener.
   AssetBundle assets;
@@ -37,7 +43,8 @@ class BaseProfile {
 
 class GardenerProfile extends BaseProfile {
   GardenerProfile(
-      {required super.assets,
+      {required super.uid,
+      required super.assets,
       required super.name,
       required super.images,
       required super.description,
@@ -54,7 +61,8 @@ class GardenerProfile extends BaseProfile {
 
 class ComposterProfile extends BaseProfile {
   ComposterProfile(
-      {required super.assets,
+      {required super.uid,
+      required super.assets,
       required super.name,
       required super.images,
       required super.description,
@@ -79,3 +87,45 @@ class ImageDescription {
 }
 
 enum ImageSource { asset, file, network }
+
+// Represents a chat between multiple users.
+class Chat {
+  Chat({required this.users}) {
+    lastModified = DateTime.now();
+  }
+
+  Set<int> users;
+
+  late DateTime lastModified;
+
+  List<ChatMessage> messages = [];
+
+  void addMessage(ChatMessage msg) {
+    messages.add(msg);
+    lastModified = msg.timestamp;
+  }
+
+  // Gets the last |count| messages, ending at endAt (non-inclusive), if specified,
+  // or the end of the messages list if not.
+  List<ChatMessage> getMessages(int count, int? endAt) {
+    if (endAt != null && (endAt < 0 || endAt >= messages.length)) {
+      return [];
+    }
+    int end = switch(endAt) {
+      null => messages.length,
+      _ => endAt
+    };
+
+    var start = max(0, end - count);
+
+    return messages.sublist(start, end);
+  }
+}
+
+class ChatMessage {
+  ChatMessage(
+      {required this.sender, required this.timestamp, required this.contents});
+  int sender;
+  DateTime timestamp;
+  String contents;
+}

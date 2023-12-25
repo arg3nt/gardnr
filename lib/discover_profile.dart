@@ -1,15 +1,18 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:gardnr/objects.dart';
 
 class DiscoverProfile extends StatefulWidget {
   const DiscoverProfile(
-      {super.key, required this.profile, required this.nextTrigger});
+      {super.key,
+      required this.profile,
+      required this.nextTrigger,
+      required this.newMatch});
 
   final UserProfile profile;
   final VoidCallback nextTrigger;
+  final void Function(UserProfile) newMatch;
 
   @override
   State<DiscoverProfile> createState() => DiscoverProfileState();
@@ -39,16 +42,25 @@ class DiscoverProfileState extends State<DiscoverProfile> {
     List<Widget> imageStackChildren = [];
     if (widget.profile.gardenerProfile!.images.isNotEmpty) {
       var imgDesc = widget.profile.gardenerProfile!.images[_carouselIndex];
-      imageStackChildren.add(Image(
-          image: switch (imgDesc.source) {
-            ImageSource.asset => AssetImage(imgDesc.path,
-                bundle: widget.profile.gardenerProfile!.assets),
-            ImageSource.file => FileImage(File(imgDesc.path)),
-            ImageSource.network => NetworkImage(imgDesc.path),
-          } as ImageProvider<Object>,
-          fit: BoxFit.fitHeight,
-          height: double.infinity,
-          width: double.infinity));
+      // TODO: handle image load failures better... for some reason they don't trigger
+      // the handling in this try/catch block?
+      try {
+        imageStackChildren.add(Image(
+            image: switch (imgDesc.source) {
+              ImageSource.asset => AssetImage(imgDesc.path,
+                  bundle: widget.profile.gardenerProfile!.assets),
+              ImageSource.file => FileImage(File(imgDesc.path)),
+              ImageSource.network => NetworkImage(imgDesc.path),
+            } as ImageProvider<Object>,
+            fit: BoxFit.fitHeight,
+            height: double.infinity,
+            width: double.infinity));
+      } catch (err) {
+        imageStackChildren.add(Image.asset("images/img_not_found.jpg",
+            fit: BoxFit.fitHeight,
+            height: double.infinity,
+            width: double.infinity));
+      }
 
       // Add carousel buttons if necessary.
       if (widget.profile.gardenerProfile!.images.length > 1) {
@@ -113,7 +125,10 @@ class DiscoverProfileState extends State<DiscoverProfile> {
                       Center(
                           child: IconButton(
                               iconSize: 40,
-                              onPressed: widget.nextTrigger,
+                              onPressed: () {
+                                widget.newMatch(widget.profile);
+                                widget.nextTrigger();
+                              },
                               icon: const Icon(Icons.favorite,
                                   color: Colors.green))),
                       const Spacer(flex: 1),

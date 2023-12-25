@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gardnr/discover_profile.dart';
+import 'package:gardnr/db.dart';
 import 'package:gardnr/objects.dart';
 import 'package:location/location.dart';
 import 'package:lorem_ipsum/lorem_ipsum.dart';
@@ -13,6 +14,7 @@ UserProfile getNextProfile() {
   var id2 = rng.nextInt(1084);
   return UserProfile(
       gardenerProfile: GardenerProfile(
+          uid: rng.nextInt(1<<32 - 1) + 1,
           assets: rootBundle,
           name: loremIpsum(words: 2),
           images: [
@@ -43,6 +45,9 @@ class DiscoverPageState extends State<DiscoverPage> {
           setState(() {
             active = getNextProfile();
           });
+        },
+        newMatch: (user) {
+          matchWithGardener(getSelfUid(), user.gardenerProfile!);
         });
   }
 }
