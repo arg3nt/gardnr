@@ -48,6 +48,12 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+  void _removeGardenerImage(String path) {
+    setState(() {
+      _profile.gardenerProfile!.images.remove(path);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -74,16 +80,43 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildGardenerImageView() {
     List<Widget> images = [];
     for (var path in _profile.gardenerProfile!.images) {
-      images.add(Padding(
-          padding: const EdgeInsets.all(5),
-          child: Image.asset(
-            path,
-            bundle: _profile.gardenerProfile!.assets,
-            fit: BoxFit.cover,
-            height: 150,
-            width: 150,
-          )));
+      images.add(Stack(
+        alignment: Alignment.topRight,
+        children: [
+          Padding(
+              padding: const EdgeInsets.all(5),
+              child: Image.asset(
+                path,
+                bundle: _profile.gardenerProfile!.assets,
+                fit: BoxFit.cover,
+                height: 150,
+                width: 150,
+              )),
+          SizedBox(
+              height: 20,
+              width: 20,
+              child: IconButton(
+                iconSize: 12,
+                padding: EdgeInsets.zero,
+                color: Colors.black,
+                icon: const Icon(Icons.close),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                    (states) => Colors.white,
+                  ),
+                ),
+                onPressed: () => {_removeGardenerImage(path)},
+              )),
+        ],
+      ));
     }
+
+    images.add(Padding(
+        padding: const EdgeInsets.all(5),
+        child: IconButton(
+            icon: const Icon(Icons.add),
+            color: Colors.black,
+            onPressed: () => {})));
 
     return Container(
         height: 160,
