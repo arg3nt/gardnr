@@ -26,7 +26,7 @@ class BaseProfile {
 
   // A list of image assetNames that can be retrieved by loading them from |assets|.
   // Can be empty.
-  List<String> images;
+  List<ImageDescription> images;
 
   // A description of the user.
   String description;
@@ -70,3 +70,12 @@ class ComposterProfile extends BaseProfile {
 }
 
 class AccountSettings {}
+
+class ImageDescription {
+  ImageDescription({required this.source, required this.path});
+
+  ImageSource source;
+  String path;
+}
+
+enum ImageSource { asset, file }

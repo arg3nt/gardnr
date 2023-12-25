@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gardnr/objects.dart';
 
@@ -31,11 +33,17 @@ class DiscoverProfileState extends State<DiscoverProfile> {
 
   @override
   Widget build(BuildContext context) {
+    var imgDesc = widget.profile.gardenerProfile!.images[_carouselIndex];
     return Stack(
       alignment: AlignmentDirectional.bottomStart,
       children: [
         Stack(alignment: Alignment.center, children: [
-          Image.asset(widget.profile.gardenerProfile!.images[_carouselIndex],
+          Image(
+              image: switch (imgDesc.source) {
+                ImageSource.asset => AssetImage(imgDesc.path,
+                    bundle: widget.profile.gardenerProfile!.assets),
+                ImageSource.file => FileImage(File(imgDesc.path)),
+              } as ImageProvider<Object>,
               fit: BoxFit.fitHeight,
               height: double.infinity,
               width: double.infinity),

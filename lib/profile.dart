@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gardnr/discover_profile.dart';
@@ -48,10 +51,21 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-  void _removeGardenerImage(String path) {
+  void _removeGardenerImage(ImageDescription desc) {
     setState(() {
-      _profile.gardenerProfile!.images.remove(path);
+      _profile.gardenerProfile!.images.remove(desc);
     });
+  }
+
+  void _addGardenerImage() async {
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
+    if (result != null) {
+      setState(() {
+        _profile.gardenerProfile!.images.add(ImageDescription(
+            source: ImageSource.file, path: result.files.single.path!));
+      });
+    }
   }
 
   @override
@@ -79,15 +93,18 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildGardenerImageView() {
     List<Widget> images = [];
-    for (var path in _profile.gardenerProfile!.images) {
+    for (var imgDesc in _profile.gardenerProfile!.images) {
       images.add(Stack(
         alignment: Alignment.topRight,
         children: [
           Padding(
               padding: const EdgeInsets.all(5),
-              child: Image.asset(
-                path,
-                bundle: _profile.gardenerProfile!.assets,
+              child: Image(
+                image: switch (imgDesc.source) {
+                  ImageSource.asset => AssetImage(imgDesc.path,
+                      bundle: _profile.gardenerProfile!.assets),
+                  ImageSource.file => FileImage(File(imgDesc.path)),
+                } as ImageProvider<Object>,
                 fit: BoxFit.cover,
                 height: 150,
                 width: 150,
@@ -105,7 +122,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     (states) => Colors.white,
                   ),
                 ),
-                onPressed: () => {_removeGardenerImage(path)},
+                onPressed: () => {_removeGardenerImage(imgDesc)},
               )),
         ],
       ));
@@ -116,7 +133,7 @@ class _ProfilePageState extends State<ProfilePage> {
         child: IconButton(
             icon: const Icon(Icons.add),
             color: Colors.black,
-            onPressed: () => {})));
+            onPressed: () => {_addGardenerImage()})));
 
     return Container(
         height: 160,
@@ -213,7 +230,12 @@ Future<UserProfile> lookupUser() async {
       gardenerProfile: GardenerProfile(
           assets: rootBundle,
           name: "Samwise Gamgee",
-          images: ["images/samwiseGardening.jpg", "images/hobbiton.jpg"],
+          images: [
+            ImageDescription(
+                source: ImageSource.asset, path: "images/samwiseGardening.jpg"),
+            ImageDescription(
+                source: ImageSource.asset, path: "images/hobbiton.jpg")
+          ],
           description:
               "Poh-tay-toes! Boil 'em, mash 'em, stick 'em in a stew!\nI love my garden here in Hobbiton!",
           location: LocationData.fromMap({'latitude': 0.0, 'longitude': 0.0}),
