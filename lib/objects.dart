@@ -78,4 +78,4 @@ class ImageDescription {
   String path;
 }
 
-enum ImageSource { asset, file }
+enum ImageSource { asset, file, network }

@@ -59,7 +59,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _page = 0;
+  int _page = 2;
 
   void _setPage(int newPage) {
     setState(() {

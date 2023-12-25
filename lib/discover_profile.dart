@@ -1,12 +1,15 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:gardnr/objects.dart';
 
 class DiscoverProfile extends StatefulWidget {
-  const DiscoverProfile({super.key, required this.profile});
+  const DiscoverProfile(
+      {super.key, required this.profile, required this.nextTrigger});
 
   final UserProfile profile;
+  final VoidCallback nextTrigger;
 
   @override
   State<DiscoverProfile> createState() => DiscoverProfileState();
@@ -41,6 +44,7 @@ class DiscoverProfileState extends State<DiscoverProfile> {
             ImageSource.asset => AssetImage(imgDesc.path,
                 bundle: widget.profile.gardenerProfile!.assets),
             ImageSource.file => FileImage(File(imgDesc.path)),
+            ImageSource.network => NetworkImage(imgDesc.path),
           } as ImageProvider<Object>,
           fit: BoxFit.fitHeight,
           height: double.infinity,
@@ -109,14 +113,14 @@ class DiscoverProfileState extends State<DiscoverProfile> {
                       Center(
                           child: IconButton(
                               iconSize: 40,
-                              onPressed: () => {},
+                              onPressed: widget.nextTrigger,
                               icon: const Icon(Icons.favorite,
                                   color: Colors.green))),
                       const Spacer(flex: 1),
                       Center(
                           child: IconButton(
                               iconSize: 40,
-                              onPressed: () => {},
+                              onPressed: widget.nextTrigger,
                               icon:
                                   const Icon(Icons.close, color: Colors.red))),
                       const Spacer(flex: 1),

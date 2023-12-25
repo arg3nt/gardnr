@@ -104,6 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ImageSource.asset => AssetImage(imgDesc.path,
                       bundle: _profile.gardenerProfile!.assets),
                   ImageSource.file => FileImage(File(imgDesc.path)),
+                  ImageSource.network => NetworkImage(imgDesc.path),
                 } as ImageProvider<Object>,
                 fit: BoxFit.cover,
                 height: 150,
@@ -178,7 +179,10 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ],
           )),
-      EditMode.previewing => DiscoverProfile(profile: _profile),
+      EditMode.previewing => DiscoverProfile(
+          profile: _profile,
+          nextTrigger: () {},
+        ),
     };
   }
 
