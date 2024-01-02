@@ -35,7 +35,7 @@ int getSelfUid() {
   return 0;
 }
 
-Future<UserProfile> lookupUser() async {
+Future<UserProfile> lookupSelfUser() async {
   await Future.delayed(const Duration(seconds: 1));
 
   return UserProfile(

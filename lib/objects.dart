@@ -107,7 +107,7 @@ class Chat {
 
   // Gets the last |count| messages, ending at endAt (non-inclusive), if specified,
   // or the end of the messages list if not.
-  List<ChatMessage> getMessages(int count, int? endAt) {
+  List<ChatMessage> getLastNMessages(int count, int? endAt) {
     if (endAt != null && (endAt < 0 || endAt >= messages.length)) {
       return [];
     }

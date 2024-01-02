@@ -23,7 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
   EditMode _editMode = EditMode.editing;
 
   void _loadUser() async {
-    var profile = await lookupUser();
+    var profile = await lookupSelfUser();
     if (mounted) {
       setState(() {
         _profile = profile;
