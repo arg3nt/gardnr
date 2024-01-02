@@ -21,6 +21,48 @@ String lastMessage(Chat chat) {
   return "\"${lastMsg[0].contents}\"";
 }
 
+class MessageCard extends StatelessWidget {
+  const MessageCard({super.key, required this.chat});
+
+  final Chat chat;
+
+  @override
+  Widget build(BuildContext context) {
+    String chatTitle = chat.users.fold("", (agg, uid) {
+      if (uid == getSelfUid()) return agg;
+
+      var user = getGardener(uid);
+      if (user == null) return agg;
+      if (agg.isEmpty) return user.name;
+
+      return "$agg, ${user.name}";
+    });
+
+    return Card(
+        clipBehavior: Clip.hardEdge,
+        child: InkWell(
+            splashColor: Colors.lightGreen,
+            onTap: () {},
+            child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          style: Theme.of(context).textTheme.headlineSmall,
+                          overflow: TextOverflow.ellipsis,
+                          chatTitle),
+                      Text(
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        lastModifiedString(chat.lastModified),
+                      ),
+                      Text(
+                          style: Theme.of(context).textTheme.bodyLarge,
+                          lastMessage(chat))
+                    ]))));
+  }
+}
+
 class MessagesPage extends StatelessWidget {
   const MessagesPage({super.key});
 
@@ -28,38 +70,7 @@ class MessagesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> chats = [];
     for (var chat in getChats(getSelfUid())) {
-      String users = chat.users.fold("", (agg, uid) {
-        if (uid == getSelfUid()) return agg;
-
-        var user = getGardener(uid);
-        if (user == null) return agg;
-        if (agg.isEmpty) return user.name;
-
-        return "$agg, ${user.name}";
-      });
-
-      chats.add(Card(
-          clipBehavior: Clip.hardEdge,
-          child: InkWell(
-              splashColor: Colors.lightGreen,
-              onTap: () {},
-              child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            style: Theme.of(context).textTheme.headlineSmall,
-                            overflow: TextOverflow.ellipsis,
-                            users),
-                        Text(
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          lastModifiedString(chat.lastModified),
-                        ),
-                        Text(
-                            style: Theme.of(context).textTheme.bodyLarge,
-                            lastMessage(chat))
-                      ])))));
+      chats.add(MessageCard(chat: chat));
     }
 
     return Padding(
