@@ -7,7 +7,9 @@ String lastModifiedString(DateTime lastModified) {
   return switch (diff) {
     < const Duration(seconds: 30) => "Just now",
     < const Duration(hours: 1) => "${diff.inMinutes} min ago",
+    < const Duration(hours: 2) => "1 hr ago",
     < const Duration(days: 1) => "${diff.inHours} hrs ago",
+    < const Duration(days: 2) => "1 day ago",
     < const Duration(days: 365) => "${diff.inDays} days ago",
     _ => "A long time ago"
   };
