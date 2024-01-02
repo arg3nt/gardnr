@@ -65,8 +65,31 @@ class MessageCard extends StatelessWidget {
   }
 }
 
-class MessagesPage extends StatelessWidget {
+class MessagesPage extends StatefulWidget {
   const MessagesPage({super.key});
+
+  @override
+  State<MessagesPage> createState() => _MessagesPageState();
+}
+
+enum MessageView { overview, chat }
+
+class _MessagesPageState extends State<MessagesPage> {
+  MessageView view = MessageView.overview;
+
+  Chat? activeChat;
+
+  @override
+  Widget build(BuildContext context) {
+    return switch(view) {
+      MessageView.overview => const MessagesOverview(),
+      MessageView.chat => const Text("TODO"),
+    };
+  }
+}
+
+class MessagesOverview extends StatelessWidget {
+  const MessagesOverview({super.key});
 
   @override
   Widget build(BuildContext context) {

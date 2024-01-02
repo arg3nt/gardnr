@@ -103,7 +103,7 @@ List<Chat> getChats(int uid) {
     chats.add(_chats[participantSet]!);
   }
 
-  chats.sort((a, b) => a.lastModified.compareTo(b.lastModified));
+  chats.sort((a, b) => b.lastModified.compareTo(a.lastModified));
 
   return chats;
 }
