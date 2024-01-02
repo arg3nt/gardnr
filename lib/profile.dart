@@ -2,10 +2,9 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:gardnr/db.dart';
 import 'package:gardnr/discover_profile.dart';
 import 'package:gardnr/objects.dart';
-import 'package:location/location.dart';
 
 enum ActivePage { gardenerView, composterView, accountView }
 
@@ -225,26 +224,4 @@ class _ProfilePageState extends State<ProfilePage> {
               ))),
     ]);
   }
-}
-
-Future<UserProfile> lookupUser() async {
-  await Future.delayed(const Duration(seconds: 1));
-
-  return UserProfile(
-      accountSettings: AccountSettings(),
-      gardenerProfile: GardenerProfile(
-          uid: 0,
-          assets: rootBundle,
-          name: "Samwise Gamgee",
-          images: [
-            ImageDescription(
-                source: ImageSource.asset, path: "images/samwiseGardening.jpg"),
-            ImageDescription(
-                source: ImageSource.asset, path: "images/hobbiton.jpg")
-          ],
-          description:
-              "Poh-tay-toes! Boil 'em, mash 'em, stick 'em in a stew!\nI love my garden here in Hobbiton!",
-          location: LocationData.fromMap({'latitude': 0.0, 'longitude': 0.0}),
-          squareFootage: 9000,
-          stuffTheyGrow: ["Potatoes"]));
 }
